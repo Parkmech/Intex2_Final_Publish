@@ -1,0 +1,85 @@
+﻿@model BioSampleViewModel
+
+@{ ViewData["Title"] = "Index";
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string printId;
+    if (Model.biologicalSamples.Count() > 0)
+    {
+        printId = "Biological Samples for " + Model.burial.BurialId;
+
+    }
+    else
+    {
+        printId = "There are no biological samples for " + Model.burial.BurialId;
+    }
+}
+
+<!-- This view returns all the bio samples related to a specific id. you can edit, delete and add samples from this page-->
+
+<br />
+    <div class="text-center">
+        <h1>@printId </h1>
+    </div>
+<hr />
+
+
+<div class="row justify-content-md-center">
+   @foreach (var sample in Model.biologicalSamples)
+   {
+        <div class="card text-center shadow-sm col-md-3 m-1 p-1">
+            <div class="card-header">
+
+                <h5>Rack Number: @sample.Rack</h5>
+                <h5>Bag Number: @sample.Bag</h5>
+
+            </div>
+        <div class="card-body">
+            <h5 class="card-title">
+                @sample.Notes
+            </h5>
+            <hr />
+            <p class="card-text">
+                Previously Sampled (Y/N): @sample.PreviouslySampled 
+                <hr />
+                Initials: @sample.Initials
+            </p>
+
+            <div class="row justify-content-md-center">
+                @if ((await AuthorizationService.AuthorizeAsync(User, "RequireResearcherRole")).Succeeded)
+                {
+
+            <a class="col-md-4 m-1 p-1 btn btn-secondary" asp-controller="BioSampleCrud" asp-action="Edit" asp-route-id="@sample.Id">Edit</a>                }
+
+                @if ((await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole")).Succeeded)
+                {
+            <a class="col-md-4 m-1 p-1 btn btn-danger " asp-controller="BioSampleCrud" asp-action="Delete" asp-route-id="@sample.Id">Delete</a>
+                               <a class="col-md-4 m-1 p-1 btn btn-secondary" asp-controller="BioSampleCrud" asp-action="Edit" asp-route-id="@sample.Id">Edit</a>                }
+
+
+            </div>
+        </div>
+        <div class="card-footer text-muted">Year Sampled: @sample.Date </div>
+        </div>
+    }
+</div>
+<br /><br />
+
+      <div class="row justify-content-md-center">
+          <a class="btn btn-secondary m-1" asp-controller="BurialCrud" asp-action="Details" asp-route-id="@Model.burial.BurialId">Back to Burial Details</a>
+
+          <a class="btn btn-dark m-1" asp-controller="BioSampleCrud" asp-action="FullTableDisplay">View all Biological Samples</a>
+
+
+          @if ((await AuthorizationService.AuthorizeAsync(User, "RequireResearcherRole")).Succeeded)
+          {
+      <a class="btn btn-primary m-1" asp-action="create" asp-route-id="@Model.burial.BurialId">Create New Sample</a>}
+          @if ((await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole")).Succeeded)
+          {
+      <a class="btn btn-primary m-1" asp-action="create" asp-route-id="@Model.burial.BurialId">Create New Sample</a>}
+
+      </div>
+
+
+<br />

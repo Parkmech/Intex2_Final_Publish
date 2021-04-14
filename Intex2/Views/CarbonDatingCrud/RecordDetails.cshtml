@@ -1,0 +1,91 @@
+﻿@model CarbonDatingViewModel
+
+@{ ViewData["Title"] = "Index";
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string printId;
+    if (Model.carbDateSamples.Count() > 0)
+    {
+        printId = "Carbon Dating Data for " + Model.burial.BurialId;
+
+    }
+    else
+    {
+        printId = "There is no carbon dating data for " + Model.burial.BurialId;
+    } }
+
+<!-- you may wonder what this page returns. in which case, you can know ithat it is a record of all the carbon
+    dating samples for a specific record.-->
+
+<br />
+
+<div class="text-center">
+    <h1>@printId </h1>
+</div>
+<hr />
+
+
+<div class="row justify-content-md-center">
+
+    @foreach (var sample in Model.carbDateSamples)
+    {
+    <div class="card shadow m-2 p-2 col-md-7">
+        <h2 class="card-header">Rack Number: @sample.Rack</h2>
+
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-5 m-1 p-1">
+                    <h5>Tube Number: @sample.Tube</h5>                            <hr />
+                    <h5>Size(ml): @sample.SizeMl </h5><hr />
+                    <h5>Location: @sample.Location</h5>                            <hr />
+                    <h5>Description: @sample.Description</h5><hr />
+                    <h5>Category: @sample.Category</h5>                            <hr />
+                    <h5>Foci: @sample.Foci</h5><hr />
+                    <h5>Notes: @sample.Notes</h5>                            <hr />
+                </div>
+                <div class="col-md-5 m-1 p-1">
+                    <h5>C14 Sample 2017: @sample.C14Sample2017</h5><hr />
+                    <h5>Conventional 14C Age BP: @sample.Conventional14cAgeBp</h5>                            <hr />
+                    <h5>14C CalendarDate @sample._14cCalendarDate</h5><hr />
+                    <h5>Calibrated 95% Calendar Date(Max): @sample.Calibrated95CalendarDateMax</h5>                            <hr />
+                    <h5>Calibrated 95% Calendar Date(Min): @sample.Calibrated95CalendarDateMin</h5><hr />
+                    <h5>Calibrated 95% Calendar Date(Span): @sample.Calibrated95CalendarDateSpan</h5><hr />
+                    <h5>Calibrated 95% Calendar Date(Avg): @sample.Calibrated95CalendarDateAvg</h5><hr />
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-md-center">
+            @if ((await AuthorizationService.AuthorizeAsync(User, "RequireResearcherRole")).Succeeded)
+            {
+        <a class="col-md-3 btn btn-secondary m-1 p-1" asp-controller="CarbonDatingCrud" asp-action="Edit" asp-route-id="@sample.Id">Edit</a>}
+
+            @if ((await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole")).Succeeded)
+            {
+        <a class="col-md-3 btn btn-secondary m-1 p-1" asp-controller="CarbonDatingCrud" asp-action="Edit" asp-route-id="@sample.Id">Edit</a>
+
+            <a class="btn btn-danger col-md-3 m-1 p-1" asp-controller="CarbonDatingCrud" asp-action="Delete" asp-route-id="@sample.Id">Delete</a>}
+        </div>
+        <br />
+    </div>
+    }
+</div>
+
+
+<div class="row justify-content-md-center">
+    <a class="btn btn-secondary m-1" asp-controller="BurialCrud" asp-action="Details" asp-route-id="@Model.burial.BurialId">Back to Burial Details</a>
+
+    @if ((await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole")).Succeeded)
+    {
+<a class="btn btn-primary m-1" asp-action="create" asp-route-id="@Model.burial.BurialId">Create New Sample</a>}
+
+    @if ((await AuthorizationService.AuthorizeAsync(User, "RequireResearcherRole")).Succeeded)
+    {<a class="btn btn-primary m-1" asp-action="create" asp-route-id="@Model.burial.BurialId">Create New Sample</a>
+    }
+
+    <a class="btn btn-dark m-1" asp-controller="CarbonDatingCrud" asp-action="FullTableDisplay">View all Carbon Dating Samples</a>
+
+</div>
+
+
+<br />

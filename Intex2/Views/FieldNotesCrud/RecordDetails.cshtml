@@ -1,0 +1,81 @@
+﻿@model FieldNotesViewModel
+
+@{ ViewData["Title"] = "Index";
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string printId;
+    if (Model.fieldNotes.Count() > 0)
+    {
+        printId = "Field Book References for " + Model.burial.BurialId;
+
+    }
+    else
+    {
+        printId = "There are no field book references for " + Model.burial.BurialId;
+    }
+
+}
+
+<!-- Displays fieldnotes for a specific burial id -->
+
+<br />
+<div class="text-center">
+    <h1>@printId </h1>
+</div>
+<hr />
+<div class="row justify-content-md-center">
+    @foreach (var entry in Model.fieldNotes)
+    {
+        <div class="card text-center shadow-sm col-md-3 m-1 p-1">
+     <div class="card-header">
+
+        <h5>Field Book: @entry.FieldBook1</h5>
+     </div>
+     <div class="card-body">
+        <h5 class="card-title">
+            Page Number: @entry.FieldBookPageNumber
+        </h5>
+        <hr />
+
+        <div class="row justify-content-md-center">
+            @if ((await AuthorizationService.AuthorizeAsync(User, "RequireResearcherRole")).Succeeded)
+            {
+
+        <a class="col-md-4 m-1 p-1 btn btn-secondary" asp-controller="FieldNotesCrud" asp-action="Edit" asp-route-id="@entry.Id">Edit</a>}
+
+            @if ((await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole")).Succeeded)
+            {
+        <a class="col-md-4 m-1 p-1 btn btn-danger " asp-controller="FieldNotesCrud" asp-action="Delete" asp-route-id="@entry.Id">Delete</a>
+                            <a class="col-md-4 m-1 p-1 btn btn-secondary" asp-controller="FieldNotesCrud" asp-action="Edit" asp-route-id="@entry.Id">Edit</a>}
+        </div>
+     </div>
+</div>
+    <br />
+}
+    <br />
+</div>
+
+
+<div class="row justify-content-md-center">
+    <a class="btn btn-secondary m-1" asp-controller="BurialCrud" asp-action="Details" asp-route-id="@Model.burial.BurialId">Back to Burial Details</a>
+
+    @if ((await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole")).Succeeded)
+    {
+
+<a class="btn btn-primary m-1" asp-action="create" asp-route-id="@Model.burial.BurialId">Add a Field Book Reference</a>
+    }
+
+    @if ((await AuthorizationService.AuthorizeAsync(User, "RequireResearcherRole")).Succeeded)
+    {
+        <a class="btn btn-primary m-1" asp-action="create" asp-route-id="@Model.burial.BurialId">Add a Field Book Reference</a>
+
+    }
+
+
+    <a class="btn btn-dark m-1" asp-controller="FieldNotesCrud" asp-action="FullTableDisplay">View All Field Book References</a>
+
+</div>
+
+
+<br />

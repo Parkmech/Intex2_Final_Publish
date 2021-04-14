@@ -1,0 +1,112 @@
+﻿@model CranialViewModel
+@{ ViewData["Title"] = "Index";
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string printId;
+    if (Model.cranialSamples.Count() > 0)
+    {
+        printId = "Cranial Data for " + Model.burial.BurialId;
+
+    }
+    else
+    {
+        printId = "There is no cranial data for " + Model.burial.BurialId;
+    }
+
+}
+
+<!-- Returns the cranial record for a specific piece of cranial data -->
+
+<br />
+
+<div class="text-center">
+    <h1> @printId </h1>
+</div>
+<hr />
+<div class="row justify-content-md-center">
+
+    @foreach (var sample in Model.cranialSamples)
+    {
+        <div class="card shadow mb-3 col-7">
+                <h2 class="card-header card-title">Burial ID: @Model.cranialSample.BurialId</h2>
+
+                <div class="card-body">
+                    <br />
+                    <h5 class="card-subtitle mb-2 text-muted">Sample #@Model.cranialSample.SampleNumber</h5>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item ">Maximum Cranial Length: @Model.cranialSample.MaximumCranialLength </li>
+                        <li class="list-group-item ">Maximum Cranial Breadth: @Model.cranialSample.MaximumCranialBreadth</li>
+                        <li class="list-group-item ">Basion-Bregma Height: @Model.cranialSample.BasionBregmaHeight</li>
+                        <li class="list-group-item ">Basion-Nasion: @Model.cranialSample.BasionNasion</li>
+                        <li class="list-group-item ">Basion-Prosthion Length: @Model.cranialSample.BasionProsthionLength</li>
+                        <li class="list-group-item ">Bizygomatic Diameter: @Model.cranialSample.BizygomaticDiameter</li>
+                        <li class="list-group-item ">Nasion-Prosthion: @Model.cranialSample.NasionProsthion</li>
+                        <li class="list-group-item ">Maximum Nasal Breadth: @Model.cranialSample.MaximumNasalBreadth</li>
+                        <li class="list-group-item ">Interorbital Breadth: @Model.cranialSample.InterorbitalBreadth</li>
+                    </ul>
+
+                    <br />
+
+                    <div class="row justify-content-md-center">
+                        @if ((await AuthorizationService.AuthorizeAsync(User, "RequireResearcherRole")).Succeeded)
+                        {
+                            <a class="col-md-3 btn btn-secondary m-1 p-1" asp-controller="CranialCrud" asp-action="Edit" asp-route-id="@Model.cranialSample.Id">Edit</a>}
+
+                        @if ((await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole")).Succeeded)
+                        {
+                            <a class="col-md-3 btn btn-secondary m-1 p-1" asp-controller="CranialCrud" asp-action="Edit" asp-route-id="@Model.cranialSample.Id">Edit</a>
+
+                        <button type="button" class="btn btn-danger col-md-3 m-1 p-1" data-toggle="modal" data-target="#myModal">Delete</button>
+                        }
+
+                        <div id="myModal" class="modal fade" role="dialog">
+
+                            <div class="modal-dialog">
+
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="text-center">Delete Cranial Data</h4>
+                                    </div>
+
+                                    <div class="modal-body">
+                                        <p>Are you sure you want to delete this cranial data?</p>
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <a class="btn btn-danger" asp-action="CustomDelete" asp-controller="CranialCrud" asp-route-id="@Model.cranialSample.Id">Delete</a>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <br />
+                        }
+                    </div>
+                </div>
+            </div>
+    }
+</div>
+
+<div class="row justify-content-md-center">
+    @if (Model.cranialSamples.Count() == 0)
+    {
+        @if ((await AuthorizationService.AuthorizeAsync(User, "RequireAdministratorRole")).Succeeded)
+        {
+            <a class="btn btn-primary m-1" asp-action="Create" asp-route-id="@Model.burial.BurialId">Add Cranial Data</a>
+        }
+        @if ((await AuthorizationService.AuthorizeAsync(User, "RequireResearcherRole")).Succeeded)
+        {
+            <a class="btn btn-primary m-1" asp-action="Create" asp-route-id="@Model.burial.BurialId">Add Cranial Data</a>
+        }
+    }
+    <a class="btn btn-secondary m-1" asp-controller="BurialCrud" asp-action="Details" asp-route-id="@Model.burial.BurialId">Back to Burial Details</a>
+
+    <a class="btn btn-dark m-1" asp-controller="CranialCrud" asp-action="FullTableDisplay">View all Cranial Data</a>
+
+</div>

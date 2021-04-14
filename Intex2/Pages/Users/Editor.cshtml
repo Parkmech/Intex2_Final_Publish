@@ -1,0 +1,109 @@
+﻿@page "{id}"
+@model EditorModel
+
+<!-- This page allows you to edit users. Again, irrelevant because of google auth-->
+
+<header class="jumbotron my-4 bg-white shadow-sm">
+
+    <h1 class="display-3">Update User "@Model.UserName"</h1>
+
+    <form method="post">
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>ID</label>
+                    <input name="Id" class="shadow-sm form-control" value="@Model.Id" disabled />
+                    <input name="Id" type="hidden" value="@Model.Id" />
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>User Name</label>
+                    <input name="UserName" class="shadow-sm form-control" value="@Model.UserName" />
+                    <span asp-validation-for="UserName" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input name="Email" class="shadow-sm form-control" value="@Model.Email" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>New Password</label>
+                    <input name="Password" class="shadow-sm form-control" value="@Model.Password" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-warning">Submit</button>
+        <a class="btn btn-secondary" asp-page="list">Back</a>
+
+    </form>
+
+</header>
+
+@functions {
+    public class EditorModel : AdminPageModel
+    {
+        public UserManager<IdentityUser> UserManager;
+        public EditorModel(UserManager<IdentityUser> usrManager)
+        {
+            UserManager = usrManager;
+        }
+        [BindProperty]
+        [Required]
+        public string Id { get; set; }
+        [BindProperty]
+        [Required(ErrorMessage = "Enter a username")]
+        public string UserName { get; set; }
+        [BindProperty]
+        [Required(ErrorMessage = "Enter a email")]
+        [EmailAddress]
+        public string Email { get; set; }
+        [BindProperty]
+        public string Password { get; set; }
+        public async Task OnGetAsync(string id)
+        {
+            IdentityUser user = await UserManager.FindByIdAsync(id);
+            Id = user.Id; UserName = user.UserName; Email = user.Email;
+        }
+        public async Task<IActionResult> OnPostAsync()
+        {
+            if (ModelState.IsValid)
+            {
+                IdentityUser user = await UserManager.FindByIdAsync(Id);
+                user.UserName = UserName;
+                user.Email = Email;
+                IdentityResult result = await UserManager.UpdateAsync(user);
+                if (result.Succeeded && !String.IsNullOrEmpty(Password))
+                {
+                    await UserManager.RemovePasswordAsync(user);
+                    result = await UserManager.AddPasswordAsync(user, Password);
+                }
+                if (result.Succeeded)
+                {
+                    return RedirectToPage("List");
+                }
+                foreach (IdentityError err in result.Errors)
+                {
+                    ModelState.AddModelError("", err.Description);
+                }
+            }
+            return Page();
+        }
+    }
+}
