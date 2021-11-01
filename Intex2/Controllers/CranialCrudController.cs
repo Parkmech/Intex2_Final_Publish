@@ -73,8 +73,7 @@ namespace Intex2.Controllers
             return View();
 
         }
-        
-
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
         // Create a new cranial record

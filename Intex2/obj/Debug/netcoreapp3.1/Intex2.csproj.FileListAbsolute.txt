@@ -1,0 +1,8 @@
+/Users/parkermecham/Documents/GitHub/Intex2_Final_Publish/Intex2/obj/Debug/netcoreapp3.1/Intex2.csprojAssemblyReference.cache
+/Users/parkermecham/Documents/GitHub/Intex2_Final_Publish/Intex2/obj/Debug/netcoreapp3.1/Intex2.AssemblyInfoInputs.cache
+/Users/parkermecham/Documents/GitHub/Intex2_Final_Publish/Intex2/obj/Debug/netcoreapp3.1/Intex2.AssemblyInfo.cs
+/Users/parkermecham/Documents/GitHub/Intex2_Final_Publish/Intex2/obj/Debug/netcoreapp3.1/Intex2.csproj.CoreCompileInputs.cache
+/Users/parkermecham/Documents/GitHub/Intex2_Final_Publish/Intex2/obj/Debug/netcoreapp3.1/Intex2.MvcApplicationPartsAssemblyInfo.cs
+/Users/parkermecham/Documents/GitHub/Intex2_Final_Publish/Intex2/obj/Debug/netcoreapp3.1/Intex2.MvcApplicationPartsAssemblyInfo.cache
+/Users/parkermecham/Documents/GitHub/Intex2_Final_Publish/Intex2/obj/Debug/netcoreapp3.1/Intex2.RazorAssemblyInfo.cache
+/Users/parkermecham/Documents/GitHub/Intex2_Final_Publish/Intex2/obj/Debug/netcoreapp3.1/Intex2.RazorAssemblyInfo.cs
